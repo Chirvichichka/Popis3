@@ -1,0 +1,1 @@
+from .news.NewsGenerator import NewsGenerator
