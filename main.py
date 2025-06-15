@@ -8,10 +8,17 @@ bot = Bot(token=BOT_TOKEN)
 dispatcher = Dispatcher()
 router = Router()
 
+commands = ["/start", "/commands", "/news", "/quote"]
+
 
 @router.message(Command("start"))
 async def start_command(message: Message):
     await message.answer("Привет, я попис-адептус, я пока не умею материться")
+
+
+@router.message(Command("commands"))
+async def commands_command(message: Message):
+    await message.answer("\n".join(commands))
 
 
 @router.message(Command("news"))
