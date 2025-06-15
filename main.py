@@ -1,12 +1,4 @@
-import asyncio
-import os
-
-from aiogram import Bot, Dispatcher, Router
-from aiogram.filters import Command
-from aiogram.types import Message
-from dotenv import load_dotenv
-
-from generation import NewsGenerator
+from main_imports import *
 
 load_dotenv()
 
@@ -19,14 +11,23 @@ router = Router()
 
 @router.message(Command("start"))
 async def start_command(message: Message):
-    await message.answer("Привет, я попис3")
+    await message.answer("Привет, я попис-адептус, я пока не умею материться")
 
 
 @router.message(Command("news"))
 async def news_command(message: Message):
+    await bot.send_chat_action(message.chat.id, "typing")
     news_generator = NewsGenerator()
     news = news_generator.generate(language="ru")
     await message.answer(news)
+
+
+@router.message(Command("quote"))
+async def quote_command(message: Message):
+    await bot.send_chat_action(message.chat.id, "typing")
+    quote_generator = QuoteGenerator()
+    quote = quote_generator.generate(language="ru")
+    await message.answer(quote)
 
 
 dispatcher.include_router(router)
