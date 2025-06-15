@@ -4,22 +4,23 @@ import os
 
 from deep_translator import GoogleTranslator
 
-BASE_DIR = os.path.dirname(__file__)
+
 
 def get_probabilities(path):
-    with open(f"{BASE_DIR}\\data\\{path}", 'r', encoding='utf-8') as f:
+    with open(path, 'r', encoding='utf-8') as f:
         return json.load(f)
 
 
 def get_text(path):
-    with open(f"{BASE_DIR}\\data\\{path}", 'r', encoding='utf-8') as f:
+    with open(path, 'r', encoding='utf-8') as f:
         return f.read()
 
 
 class NewsGenerator:
     def __init__(self):
-        self.text = get_text("news_text.txt")
-        self.probabilities = get_probabilities("probabilities.json")
+        self._BASE_DIR = os.path.dirname(__file__)
+        self.text = get_text(f"{self._BASE_DIR}\\data\\news_text.txt")
+        self.probabilities = get_probabilities(f"{self._BASE_DIR}\\data\\probabilities.json")
 
     def generate(self, length=10, random_param=True, language=None, start_word=None):
         if random_param:
