@@ -22,12 +22,15 @@ class NewsGenerator:
         self.text = get_text(f"{self._BASE_DIR}\\data\\news_text.txt")
         self.probabilities = get_probabilities(f"{self._BASE_DIR}\\data\\probabilities.json")
 
-    def generate(self, length=10, random_param=True, language=None, start_word=None):
-        if random_param:
-            start_word = random.choice(self.text.split())
+    def generate(self, length=None, language='en', start_word=None):
+        if not length:
             length = random.randint(10, 30)
 
-        current_word = start_word
+        if start_word in self.probabilities.keys():
+            current_word = start_word
+        else:
+            current_word = random.choice(self.text.split())
+
         result = [current_word]
 
         for _ in range(length - 1):
@@ -41,7 +44,7 @@ class NewsGenerator:
             result.append(next_word)
             current_word = next_word
 
-        if language is None:
+        if language == 'en':
             news = " ".join(result)
         else:
             news = GoogleTranslator(source='en', target=language).translate(" ".join(result))

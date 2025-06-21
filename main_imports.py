@@ -8,3 +8,5 @@ from dotenv import load_dotenv
 
 from generation import NewsGenerator
 from generation import QuoteGenerator
+
+from keyboards import generation_text_keyboard
