@@ -8,6 +8,9 @@ generation_text_keyboard = ReplyKeyboardMarkup(
         [
             KeyboardButton(text = "/news")
         ],
+        [
+            KeyboardButton(text="/rave")
+        ],
     ],
     resize_keyboard=True,
     one_time_keyboard=True

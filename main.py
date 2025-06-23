@@ -8,7 +8,9 @@ bot = Bot(token=BOT_TOKEN)
 dispatcher = Dispatcher()
 router = Router()
 
-commands = ["/start", "/commands", "/news", "/quote"]
+rave = RaveGenerator()
+
+commands = ["/start", "/commands", "/news", "/quote", "/rave", "/prob"]
 
 
 @router.message(Command("start"))
@@ -19,6 +21,16 @@ async def start_command(message: Message):
 @router.message(Command("commands"))
 async def commands_command(message: Message):
     await message.answer("\n".join(commands), reply_markup=generation_text_keyboard)
+
+
+@router.message(Command("prob"))
+async def prob_command(message: Message):
+    await message.answer(f"Вероятность этого {random.randint(1, 99)}.{random.randint(1, 99):02}%")
+
+
+@router.message(Command("rave"))
+async def rave_command(message: Message):
+    await message.answer(rave.generate())
 
 
 @router.message(Command("news"))
@@ -41,10 +53,25 @@ async def quote_command(message: Message):
     await message.answer(quote)
 
 
+@router.message(F.text)
+async def handle_text(message: Message):
+    rave.add_text(message.text.lower())
+
+
 dispatcher.include_router(router)
 
 
+async def send_random_rave():
+    while True:
+        wait_time = random.randint(60, 300)
+        text = rave.generate()
+
+        await asyncio.sleep(wait_time)
+        await bot.send_message(chat_id = -4657793483, text = text)
+
+
 async def main():
+    asyncio.create_task(send_random_rave())
     await dispatcher.start_polling(bot)
 
 
