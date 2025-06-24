@@ -1,5 +1,7 @@
-from aiogram import BaseMiddleware, Bot, Dispatcher
-from typing import Callable, Dict, Any, Awaitable
+from typing import Callable, Dict, Any
+
+from aiogram import BaseMiddleware, Bot
+
 
 class BotMiddleware(BaseMiddleware):
     def __init__(self, bot: Bot):

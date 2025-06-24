@@ -1,5 +1,5 @@
-import os
 import json
+import os
 
 _BASE_DIR = os.path.dirname(__file__)
 
@@ -7,6 +7,7 @@ _BASE_DIR = os.path.dirname(__file__)
    medium - 1..5 min
    long - 1..15 min
    very long - 1..30 min"""
+
 
 class Config:
     def __init__(self):

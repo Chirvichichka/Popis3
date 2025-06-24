@@ -4,7 +4,8 @@ import random
 from aiogram import Bot
 
 from config import Config
-from generation.rave.rave_generator import RaveGenerator
+from generation.rave.legacy.rave_generator_legacy import RaveGenerator
+
 
 def get_time(chat_id, config: Config):
     chat_settings = config.chat_settings

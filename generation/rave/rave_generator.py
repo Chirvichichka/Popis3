@@ -3,88 +3,88 @@ import os
 import random
 import re
 
-from collections import defaultdict, Counter
-
-_BASE_DIR = os.path.dirname(__file__)
-
-
-def load_text():
-    with open(f"{_BASE_DIR}\\data\\rave.txt", 'r', encoding='utf-8') as f:
-        return f.read().replace('\n', ' ').strip()
-
-
-def load_probabilities(path):
-    with open(path, 'r', encoding='utf-8') as f:
-        return json.load(f)
+from collections import Counter
 
 
 class RaveGenerator:
     def __init__(self):
-        self.text = load_text()
-        self.probabilities = load_probabilities(path=f"{_BASE_DIR}\\data\\probabilities.json")
+        self._BASE_DIR = os.path.dirname(__file__)
 
-    def update_probabilities(self):
-        transitions = defaultdict(list)
-        text = self.text.split()
-
-        for i in range(len(text) - 2):
-            w1, w2 = text[i], text[i + 1]
-            next_word = text[i + 2]
-            transitions[(w1, w2)].append(next_word)
-
-        for key, next_words in transitions.items():
-            total = len(next_words)
-            counter = Counter(next_words)
-            key_str = ' '.join(key)
-            self.probabilities[key_str] = {word: count / total for word, count in counter.items()}
-
-        with open(f"{_BASE_DIR}\\data\\probabilities.json", "w", encoding="utf-8") as f:
-            json.dump(self.probabilities, f, ensure_ascii=False, indent=4)
-
-    def update_text(self):
-        self.text = load_text()
+        self.tokens = self.get_tokens()
+        self.model = self.get_model()
 
     def add_text(self, text):
-        with open(f"{_BASE_DIR}\\data\\rave.txt", 'a', encoding='utf-8') as f:
+        with open(f"{self._BASE_DIR}\\data\\rave.txt", 'a', encoding='utf-8') as f:
             tokens = re.findall(r"\w+|[^\w\s]", text, re.UNICODE)
-            if tokens[-1] not in re.findall(r"[^\w\s]", text, re.UNICODE):
-                tokens.append(".")
             new_text = '\n' + " ".join(tokens)
             f.write(new_text)
 
-        self.update_text()
-        self.update_probabilities()
+        self.tokens = self.get_tokens()
+        self.update_model()
 
-    def generate(self, length=None):
-        if length is None:
-            length = random.randint(1, 20)
+    def update_model(self):
+        alpha = 0.7
 
-        start = random.choices(list(self.probabilities.keys()))
-        w1, w2 = start[0].split(' ')
+        unigram_counts = Counter(self.tokens)
+        bigram_counts = Counter((self.tokens[i], self.tokens[i + 1]) for i in range(len(self.tokens) - 1))
+        total_unigrams = sum(unigram_counts.values())
 
-        result = [w1, w2]
+        interpolated_probs = {}
+
+        for (w1, w2), bigram_count in bigram_counts.items():
+            p_bigram = bigram_count / unigram_counts[w1]
+            p_unigram = unigram_counts[w2] / total_unigrams
+            p_interp = alpha * p_bigram + (1 - alpha) * p_unigram
+
+            if w1 not in interpolated_probs:
+                interpolated_probs[w1] = {}
+
+            interpolated_probs[w1][w2] = p_interp
+
+        with open(f"{self._BASE_DIR}\\data\\interpolated_model.json", "w", encoding="utf-8") as f:
+            json.dump(interpolated_probs, f, ensure_ascii=False, indent=4)
+
+        self.model = self.get_model()
+
+    def get_model(self):
+        try:
+            with open(f"{self._BASE_DIR}\\data\\interpolated_model.json", "r", encoding="utf-8") as file:
+                model = json.load(file)
+            return model
+        except FileNotFoundError:
+            raise "File not found."
+
+    def get_tokens(self):
+        try:
+            with open(f"{self._BASE_DIR}\\data\\rave.txt", "r", encoding="utf-8") as file:
+                text = file.read().replace("\n", " ")
+                tokens = text.split()
+            return tokens
+        except FileNotFoundError:
+            raise "File not found"
+
+    def generate(self, start_word=None):
+        length = random.randint(1, 20)
+
+        if start_word is None:
+            start_word = random.choice(self.tokens)
+
+        result = [start_word]
+
         for _ in range(length):
-            next_words = self.probabilities.get(f"{w1} {w2}")
+            next_words = self.model.get(start_word)
 
-            if not next_words:
-                break
-
-            w3 = random.choices(
+            next_word = random.choices(
                 population=list(next_words.keys()),
                 weights=list(next_words.values())
             )[0]
 
-            result.append(w3)
-            w1, w2 = w2, w3
+            result.append(next_word)
+            start_word = next_word
 
         return re.sub(r"\s+([.,!?;:%»])", r"\1", " ".join(result))
 
 
 if __name__ == "__main__":
     rave = RaveGenerator()
-    rave.update_probabilities()
-    k = rave.probabilities.keys()
-    print(k)
-    r = rave.generate()
-    print(load_text())
-    print(r)
+    print(rave.generate())

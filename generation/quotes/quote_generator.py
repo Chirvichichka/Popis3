@@ -1,7 +1,6 @@
-import os
 import json
+import os
 import random
-
 from collections import defaultdict, Counter
 
 from deep_translator import GoogleTranslator
@@ -26,6 +25,7 @@ def init_model(text):
         model[(w1, w2)][w3] += 1
 
     return model
+
 
 class QuoteGenerator:
     def __init__(self):

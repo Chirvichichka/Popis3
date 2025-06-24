@@ -1,14 +1,13 @@
 import random
 
 from aiogram import Router, F, Bot
-from aiogram.types import Message
 from aiogram.filters import Command
-
-from keyboards import generation_text_keyboard
+from aiogram.types import Message
 
 from generation import NewsGenerator
 from generation import QuoteGenerator
 from generation import RaveGenerator
+from keyboards import generation_text_keyboard
 
 router = Router()
 

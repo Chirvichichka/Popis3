@@ -1,9 +1,8 @@
 import json
-import random
 import os
+import random
 
 from deep_translator import GoogleTranslator
-
 
 
 def get_probabilities(path):
