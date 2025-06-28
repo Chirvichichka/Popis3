@@ -31,13 +31,13 @@ class QuoteGenerator:
     def __init__(self):
         self._BASE_DIR = os.path.dirname(__file__)
 
-        self.text = get_text(f"{self._BASE_DIR}\\data\\quotes.txt")
+        self.text = get_text(f"{self._BASE_DIR}/data/quotes.txt")
         self.average_length = self.calculate_average_length()
 
         self.model = init_model(self.text)
 
     def calculate_average_length(self):
-        with open(f"{self._BASE_DIR}\\data\\quotes.json", "r", encoding="utf-8") as f:
+        with open(f"{self._BASE_DIR}/data/quotes.json", "r", encoding="utf-8") as f:
             quotes = json.load(f)
 
         sentences = [sent["Quote"] for sent in quotes]

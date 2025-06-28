@@ -14,7 +14,7 @@ class RaveGenerator:
         self.model = self.get_model()
 
     def add_text(self, text):
-        with open(f"{self._BASE_DIR}\\data\\rave.txt", 'a', encoding='utf-8') as f:
+        with open(f"{self._BASE_DIR}/data/rave.txt", 'a', encoding='utf-8') as f:
             tokens = re.findall(r"\w+|[^\w\s]", text, re.UNICODE)
             new_text = '\n' + " ".join(tokens)
             f.write(new_text)
@@ -41,14 +41,14 @@ class RaveGenerator:
 
             interpolated_probs[w1][w2] = p_interp
 
-        with open(f"{self._BASE_DIR}\\data\\interpolated_model.json", "w", encoding="utf-8") as f:
+        with open(f"{self._BASE_DIR}/data/interpolated_model.json", "w", encoding="utf-8") as f:
             json.dump(interpolated_probs, f, ensure_ascii=False, indent=4)
 
         self.model = self.get_model()
 
     def get_model(self):
         try:
-            with open(f"{self._BASE_DIR}\\data\\interpolated_model.json", "r", encoding="utf-8") as file:
+            with open(f"{self._BASE_DIR}/data/interpolated_model.json", "r", encoding="utf-8") as file:
                 model = json.load(file)
             return model
         except FileNotFoundError:
@@ -56,7 +56,7 @@ class RaveGenerator:
 
     def get_tokens(self):
         try:
-            with open(f"{self._BASE_DIR}\\data\\rave.txt", "r", encoding="utf-8") as file:
+            with open(f"{self._BASE_DIR}/data/rave.txt", "r", encoding="utf-8") as file:
                 text = file.read().replace("\n", " ")
                 tokens = text.split()
             return tokens
