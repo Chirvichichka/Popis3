@@ -16,6 +16,7 @@ def get_time(chat_id, config: Config):
         "medium": (60, 300),
         "long": (60, 900),
         "very long": (60, 1800),
+        "very very long": (300, 3000),
     }
 
     return random.randint(*time_variants[time])

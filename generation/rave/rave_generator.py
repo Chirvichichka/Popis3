@@ -23,7 +23,7 @@ class RaveGenerator:
         self.update_model()
 
     def update_model(self):
-        alpha = 0.7
+        alpha = 0.8
 
         unigram_counts = Counter(self.tokens)
         bigram_counts = Counter((self.tokens[i], self.tokens[i + 1]) for i in range(len(self.tokens) - 1))
