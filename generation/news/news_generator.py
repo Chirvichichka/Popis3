@@ -18,8 +18,8 @@ def get_text(path):
 class NewsGenerator:
     def __init__(self):
         self._BASE_DIR = os.path.dirname(__file__)
-        self.text = get_text(f"{self._BASE_DIR}/data/news_text.txt")
-        self.probabilities = get_probabilities(f"{self._BASE_DIR}/data/probabilities.json")
+        self.text = get_text(os.path.join(self._BASE_DIR, "data", "news_text.txt"))
+        self.probabilities = get_probabilities(os.path.join(self._BASE_DIR, "data", "probabilities.json"))
 
     def generate(self, length=None, language='en', start_word=None):
         if not length:
